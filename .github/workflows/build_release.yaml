@@ -36,6 +36,6 @@ jobs:
       - name: Create Release
         if: steps.check_version.outputs.new_release == 'true'
         run: |
-          gh release create ${{ steps.extract_fw_version.outputs.FW_VERSION }} device/*.bin --title "Release ${{ steps.extract_fw_version.outputs.FW_VERSION }}"
+          gh release create ${{ steps.check_version.outputs.FW_VERSION }} device/*.bin --title "Release ${{ steps.check_version.outputs.FW_VERSION }}"
         env: 
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
