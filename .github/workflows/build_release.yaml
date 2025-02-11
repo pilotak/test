@@ -16,7 +16,7 @@ jobs:
       - name: Build firmware using ESPHome
         uses: esphome/build-action@v6
         with:
-          yaml_file: device.yaml
+          yaml-file: device.yaml
 
       - name: Check FW versions
         id: check_version
