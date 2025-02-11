@@ -1,3 +1,6 @@
+substitutions:
+  fw_ver: "v1.0.3"
+  
 esphome:
   name: test
   friendly_name: test
