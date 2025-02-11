@@ -21,13 +21,12 @@ jobs:
       - name: Check FW versions
         id: check_version
         run: |
-          sudo apt-get update
-          sudo apt-get install -y yq
+          apt-get install -y yq
 
           FW_VERSION=$(yq '.substitutions.fw_ver' device.yaml)
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 
-          if [ FW_VERSION != "$LATEST_TAG" ]; then
+          if [ $FW_VERSION != $LATEST_TAG ]; then
             echo "new_release=true" >> $GITHUB_OUTPUT
           else
             echo "new_release=false" >> $GITHUB_OUTPUT
@@ -36,6 +35,6 @@ jobs:
       - name: Create Release
         if: steps.check_version.outputs.new_release == 'true'
         run: |
-          gh release create ${{ steps.extract_fw_version.outputs.FW_VERSION }} device/*.bin --title "Release ${{ steps.extract_fw_version.outputs.FW_VERSION }}" --notes "Release notes for version ${{ steps.extract_fw_version.outputs.FW_VERSION }}"
+          gh release create ${{ steps.extract_fw_version.outputs.FW_VERSION }} device/*.bin --title "Release ${{ steps.extract_fw_version.outputs.FW_VERSION }}"
         env: 
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
