@@ -38,6 +38,9 @@ jobs:
           echo "FW_VERSION=$FW_VERSION" >> $GITHUB_OUTPUT
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 
+          echo "LATEST_TAG=$LATEST_TAG"
+          echo "FW_VERSION=$FW_VERSION"
+
           if [ "$FW_VERSION" != "$LATEST_TAG" ]; then
             echo "new_release=true" >> $GITHUB_OUTPUT
           else
