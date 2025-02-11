@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-tags: true  # Ensure we fetch all tags
+          fetch-depth: 0   # Fetch full history
 
       - name: Create secrets.yaml
         run: |
