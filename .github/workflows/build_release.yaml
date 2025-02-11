@@ -17,6 +17,11 @@ jobs:
         with:
           fetch-tags: true  # Ensure we fetch all tags
 
+      - name: Create secrets.yaml
+        run: |
+          mkdir -p config
+          echo "${{ secrets.ESPHOME_SECRETS }}" > config/secrets.yaml
+
       - name: Build firmware using ESPHome
         id: esphome
         uses: esphome/build-action@v6
