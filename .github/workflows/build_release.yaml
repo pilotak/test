@@ -41,7 +41,7 @@ jobs:
           echo "LATEST_TAG=$LATEST_TAG"
           echo "FW_VERSION=$FW_VERSION"
 
-          if [ "$FW_VERSION" != "$LATEST_TAG" ]; then
+          if [ "${FW_VERSION//\"/}" != "$LATEST_TAG" ]; then
             echo "new_release=true" >> $GITHUB_OUTPUT
           else
             echo "new_release=false" >> $GITHUB_OUTPUT
