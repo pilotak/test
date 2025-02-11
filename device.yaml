@@ -2,8 +2,10 @@ esphome:
   name: test
   friendly_name: test
 
-esp8266:
-  board: esp01_1m
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
 
 logger:
 
