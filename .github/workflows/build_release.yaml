@@ -1,0 +1,64 @@
+name: Build & Release
+
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true 
+          fetch-depth: 0 
+
+      - name: Create secrets.yaml
+        run: |
+          cat << EOF > ./secrets.yaml
+          $ESPHOME_SECRETS
+          EOF
+
+          cat ./secrets.yaml
+        env:
+          ESPHOME_SECRETS: ${{ secrets.ESPHOME_SECRETS }}
+
+      - uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "Europe/Prague"
+
+      - name: Build firmware using ESPHome
+        id: esphome
+        uses: esphome/build-action@v6
+        with:
+          yaml-file: device.yaml
+
+      - name: Check FW versions
+        id: check_version
+        run: |
+          sudo apt-get install -y yq
+
+          FW_VERSION=$(yq '.substitutions.fw_ver' device.yaml)
+          echo "FW_VERSION=$FW_VERSION" >> $GITHUB_OUTPUT
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+
+          echo "LATEST_TAG=$LATEST_TAG"
+          echo "FW_VERSION=$FW_VERSION"
+
+          if [ "${FW_VERSION//\"/}" != "$LATEST_TAG" ]; then
+            echo "new_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "new_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.check_version.outputs.new_release == 'true'
+        run: |
+          gh release create ${{ steps.check_version.outputs.FW_VERSION }} ${{steps.esphome.outputs.name}}/*.bin --title "Release ${{ steps.check_version.outputs.FW_VERSION }}"
+        env: 
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

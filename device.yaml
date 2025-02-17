@@ -1,0 +1,26 @@
+substitutions:
+  fw_ver: "v1.0.3"
+  
+esphome:
+  name: test
+  friendly_name: test
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+logger:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ap:
+    ssid: !secret ssid
+    password: !secret password
+
+captive_portal:
+    
+time:
+  - platform: sntp
